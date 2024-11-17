@@ -22,22 +22,21 @@ void sort_arrival_time(struct thread_info* jobs_array, int numJobs)
     }
 }
 
-
-void fifo_in_place(struct thread_info* jobs_array)
+struct thread_info* fifo_not_in_place(struct thread_info* jobs_array)
 {
-    // get the number of jobs in the array
-    int numJobs = sizeof(jobs_array) / sizeof(jobs_array[0]);
-    
-    // sort the jobs based on arrival time using a bubble sort
-    sort_arrival_time(jobs_array, numJobs);
+    // intialize a results array
+    struct thread_info* results = (struct thread_info*)malloc(5 * sizeof(struct thread_info));
 
     int curr_time = 0;
 
     // process the jobs through FIFO
-    for ( int i = 0; i < numJobs; i++)
+    for ( int i = 0; i < 5; i++)
     {
+        // copy over the jobs from the passed in array into the new one
+        results[i] = jobs_array[i];
+        
         // get the job
-        struct thread_info* job = &jobs_array[i];
+        struct thread_info* job = &results[i];
 
         // wait for the job to arrive and go to that specific time
         if ( curr_time < job->arrival_time )
@@ -51,6 +50,8 @@ void fifo_in_place(struct thread_info* jobs_array)
         // update the current time
         curr_time = job->completion_time;     
     }
+    
+    return results;
 }
 
 void setup(struct thread_info *jobs, int * job_info)
@@ -58,7 +59,7 @@ void setup(struct thread_info *jobs, int * job_info)
     int j = 0;
     for (int i = 0; i < 10; i = i + 2)
     {
-        jobs[j].job_ID = i;
+        jobs[j].job_ID = j;
         jobs[j].arrival_time = job_info[i];
         jobs[j].turnaround_time = -1;
         jobs[j].completion_time = -1;
@@ -79,14 +80,14 @@ int main(int argc, char *argv[])
     setup(job_list, job_starter_info);
     
     printf("Running FIFO tests\n");
-    fifo_in_place(job_list);
+    struct thread_info *fifo_results = fifo_not_in_place(job_list);
 
     for (int i = 0; i < 5; i++)
     {
         printf("Job %d expected turnaround time: %d, actual turnaround time: %d\n",
-                i, job_expected_times_fifo[i][0], job_list[i].turnaround_time);
+                i, job_expected_times_fifo[i][0], fifo_results[i].turnaround_time);
         printf("Job %d expected response time: %d, actual response time: %d\n\n",
-                i, job_expected_times_fifo[i][1], job_list[i].response_time);
+                i, job_expected_times_fifo[i][1], fifo_results[i].response_time);
     }
 
     printf("Running SFJ tests\n");

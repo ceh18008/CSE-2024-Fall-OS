@@ -53,10 +53,11 @@ void sjf_scheduler(struct thread_info *jobs_array) {
             curr_time = job->arrival_time;
         }
 
-        //job is finished
+        //job is running
+        job->first_run = curr_time;
         job->completion_time = curr_time + job->time_remaining;
 
-        //update how lob it took to complete
+        //update how long it took to complete
         curr_time = job->completion_time;
     }
 }

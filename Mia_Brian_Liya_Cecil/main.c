@@ -118,10 +118,9 @@ void sort_arrival_and_time_remaining (struct thread_info* jobs_array, int numJob
     }
 }
 
-void sjf_scheduler(struct thread_info *jobs_array) {
+void sjf_scheduler(struct thread_info *jobs_array, int numJobs) {
 /* Schedules jobs based on the Shortest Job First method.*/
     
-    int numJobs = 5;
     int curr_time = 0;
 
     sort_arrival_and_time_remaining(jobs_array, numJobs);
@@ -185,7 +184,7 @@ int main(int argc, char *argv[])
     }
 
     printf("Running SFJ tests\n");
-    sjf_scheduler(job_list);
+    sjf_scheduler(job_list, 5);
     responsetime(job_list, 5);
     turnaroundtime(job_list, 5);
 
